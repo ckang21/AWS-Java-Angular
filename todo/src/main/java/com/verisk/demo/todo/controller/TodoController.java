@@ -30,4 +30,14 @@ public class TodoController {
     public void deleteTodo(@PathVariable Long id) {
         repo.deleteById(id);
     }
+    @PutMapping("/{id}")
+    public Todo updateTodo(@PathVariable Long id, @RequestBody Todo updatedTodo) {
+        return repo.findById(id)
+                .map(todo -> {
+                    todo.setTask(updatedTodo.getTask());
+                    todo.setCompleted(updatedTodo.isCompleted());
+                    return repo.save(todo);
+                })
+                .orElseThrow(() -> new RuntimeException("Todo not found"));
+    }
 }
